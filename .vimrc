@@ -38,7 +38,7 @@ filetype plugin on
 
 
 " --------------------------------------------------------------------------------------------------------------------
-" 				PLUGINS (usinng VimPlug)
+" 				PLUGINS (using VimPlug)
 " --------------------------------------------------------------------------------------------------------------------
 " All Lazy Loads improve performance as Vim is single-threaded
 call plug#begin('~/.vim/plugged')
@@ -84,7 +84,10 @@ call plug#begin('~/.vim/plugged')
 					let g:tagbar_width = 30
 		"
         " Vim Surround
-			" Use 'S' from n & v modes to surround the selection in your chosen char
+	  " Use 'S' from n & v modes to surround the selection in your chosen char
 			Plug 'tpope/vim-surround'
+
+		" Kotlin syntax plugin
+		Plug 'udalov/kotlin-vim'
 
 call plug#end()
