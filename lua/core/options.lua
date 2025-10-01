@@ -28,6 +28,8 @@ o.filetype = "plugin"
 o.errorbells = false
 o.visualbell = false
 o.belloff = "all"
+o.undofile = true
+o.undodir = vim.fn.stdpath("data") .. "/undo"
 
 -- WSL2 clipboard integration
 vim.g.clipboard = {
