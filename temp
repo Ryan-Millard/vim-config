@@ -15,11 +15,11 @@ o.shiftwidth = 4
 o.autoindent = true
 o.smartindent = true
 o.listchars = {
-	tab = "▎ ",     -- vertical bar for tabs
-	trail = "·",    -- dot for trailing spaces
-	extends = "›",  -- when line continues
-	precedes = "‹", -- when line continues backwards
-	nbsp = "␣",     -- non-breaking space
+  tab = "▎ ",     -- vertical bar for tabs
+  trail = "·",    -- dot for trailing spaces
+  extends = "›",  -- when line continues
+  precedes = "‹", -- when line continues backwards
+  nbsp = "␣",     -- non-breaking space
 }
 o.syntax = "enable"
 o.list = true
@@ -128,27 +128,7 @@ require("lazy").setup({
 	},
 
 	-- Git integration
-	{
-		"lewis6991/gitsigns.nvim",
-		config = function()
-			require("gitsigns").setup({
-				-- hide the default gutter signs
-				signs = {
-					add          = { text = "" },
-					change       = { text = "" },
-					delete       = { text = "" },
-					topdelete    = { text = "" },
-					changedelete = { text = "" },
-				},
-				numhl = true, -- highlight line numbers instead
-			})
-
-			-- Strong background highlights for line numbers
-			vim.api.nvim_set_hl(0, "GitSignsAddNr",    { bg = "#1f6f43", fg = "#ffffff", bold = true }) -- vivid green
-			vim.api.nvim_set_hl(0, "GitSignsChangeNr", { bg = "#b58900", fg = "#000000", bold = true }) -- intense yellow
-			vim.api.nvim_set_hl(0, "GitSignsDeleteNr", { bg = "#af1f1f", fg = "#ffffff", bold = true }) -- strong red
-		end,
-	},
+	{ "lewis6991/gitsigns.nvim", config = true },
 	{ "tpope/vim-fugitive" },
 
 	-- Modern surround
@@ -208,8 +188,8 @@ local groups = {
 
 local function use_terminal_colors()
   for _, g in ipairs(groups) do
-	 --Only set bg=nil to make it transparent; fg=nil keeps terminal default
-	pcall(vim.api.nvim_set_hl, 0, g, { bg = "none" })
+    -- Only set bg=nil to make it transparent; fg=nil keeps terminal default
+    pcall(vim.api.nvim_set_hl, 0, g, { bg = "none" })
   end
 end
 
