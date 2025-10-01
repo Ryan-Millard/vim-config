@@ -15,6 +15,7 @@ return {
 	},
 	config = function()
 		local telescope = require("telescope")
+		local actions = require("telescope.actions")
 		telescope.setup({
 			defaults = {
 				hidden = true,
@@ -22,6 +23,21 @@ return {
 				prompt_prefix = "🔍 ",
 				selection_caret = " ",
 				path_display = { "smart" },
+
+				layout_strategy = "horizontal",   -- horizontal or vertical
+				layout_config = {
+					width = 0.99,                   -- 99% of screen width
+					height = 0.95,                  -- 95% of screen height
+					prompt_position = "top",        -- prompt at the top
+					preview_width = 0.6,            -- preview pane width
+				},
+				sorting_strategy = "ascending",   -- results top-to-bottom
+				mappings = {
+					n = {
+						["j"] = actions.move_selection_next,
+						["k"] = actions.move_selection_previous,
+					},
+				},
 			},
 			pickers = {
 				find_files = { hidden = true, no_ignore = true },
