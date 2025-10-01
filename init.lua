@@ -7,7 +7,7 @@ vim.g.mapleader = "\\"
 -- Basic options
 -- =======================================================
 local o = vim.opt
---o.mouse = ""
+o.mouse = ""
 o.backspace = "indent,eol,start"
 o.number = true
 o.relativenumber = true
@@ -65,20 +65,6 @@ map("n", "<Leader>t", ":TagbarToggle<CR>")
 
 -- Emmet (trigger manually via Ctrl-e in insert mode)
 map("i", "<C-e>", '<C-o>:call emmet#expandAbbr(0,"i")<CR>')
-
--- Telescope
-map("n", "<Leader>ff", "<cmd>Telescope find_files<CR>", { desc = "Find files" })
-map("n", "<Leader>fg", "<cmd>Telescope live_grep<CR>",  { desc = "Live grep" })
-map("n", "<Leader>fb", "<cmd>Telescope buffers<CR>",    { desc = "Find buffers" })
-map("n", "<Leader>fh", "<cmd>Telescope help_tags<CR>",  { desc = "Help tags" })
-
--- Inspect under cursor
-vim.api.nvim_set_keymap(
-	"n",
-	"<leader>i",
-	":TSHighlightCapturesUnderCursor<CR>",
-	{ noremap = true, silent = true }
-)
 
 -- =======================================================
 -- Plugins using lazy.nvim
@@ -197,6 +183,7 @@ require("lazy").setup({
 					persist_queries = false,
 				},
 			})
+			vim.keymap.set("n", "<Leader>i", ":TSHighlightCapturesUnderCursor<CR>", { silent = true })
 		end,
 	},
 
@@ -242,8 +229,9 @@ require("lazy").setup({
 			vim.api.nvim_set_hl(0, "GitSignsTopdeleteNr", { bg = "#ff1f1f", fg = "#ffffff", bold = true })
 			vim.api.nvim_set_hl(0, "GitSignsChangedeleteNr", { bg = "#ff5555", fg = "#ffffff", bold = true })
 		end,
+		event = "BufRead"
 	},
-	{ "tpope/vim-fugitive" },
+	{ "tpope/vim-fugitive", cmd = "Git" },
 
 	-- Modern surround
 	{ "kylechui/nvim-surround", event = "VeryLazy", config = true },
@@ -279,7 +267,7 @@ require("lazy").setup({
 	{ "mattn/emmet-vim", event = "InsertEnter" },
 
 	-- NerdCommenter (you may want to swap to Comment.nvim later)
-	{ "preservim/nerdcommenter" },
+	{ "preservim/nerdcommenter", event = "VeryLazy" },
 
 	-- Kotlin syntax
 	{ "udalov/kotlin-vim" },
