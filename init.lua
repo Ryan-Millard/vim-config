@@ -55,15 +55,21 @@ map("n", "<Leader>ya", [[:%w !clip.exe<CR>:redraw!<CR>]], { silent = true })
 -- NerdCommenter toggle
 map({"n", "v"}, "<Leader><Leader>", "<Plug>NERDCommenterToggle")
 
--- NERDTree
-map("n", "<Leader>d", ":NERDTreeToggle<CR>")
-map("n", "<Leader>ex", ":tabe | NERDTree | only<CR>")
+-- NvimTree
+map("n", "<Leader>d", ":NvimTreeToggle<CR>")
+map("n", "<Leader>ex", ":tabe | NvimTree | only<CR>")
 
 -- Tagbar
 map("n", "<Leader>t", ":TagbarToggle<CR>")
 
 -- Emmet (trigger manually via Ctrl-e in insert mode)
 map("i", "<C-e>", '<C-o>:call emmet#expandAbbr(0,"i")<CR>')
+
+-- Telescope
+map("n", "<Leader>ff", "<cmd>Telescope find_files<CR>", { desc = "Find files" })
+map("n", "<Leader>fg", "<cmd>Telescope live_grep<CR>",  { desc = "Live grep" })
+map("n", "<Leader>fb", "<cmd>Telescope buffers<CR>",    { desc = "Find buffers" })
+map("n", "<Leader>fh", "<cmd>Telescope help_tags<CR>",  { desc = "Help tags" })
 
 -- =======================================================
 -- Plugins using lazy.nvim
@@ -79,15 +85,27 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
-	-- File explorer (replaces NERDTree)
+	-- File explorer
 	{
-		"nvim-tree/nvim-tree.lua",
-		dependencies = { "nvim-tree/nvim-web-devicons" },
-		config = function()
-			require("nvim-tree").setup({})
-		end,
-		cmd = { "NvimTreeToggle", "NvimTreeFindFile" },
-	},
+    "nvim-tree/nvim-tree.lua",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    config = function()
+        require("nvim-tree").setup({
+            git = {
+                enable = true,        -- enable git coloring
+                ignore = false,       -- don't hide ignored files
+                timeout = 400,
+            },
+            renderer = {
+                highlight_git = true,  -- color filenames by git status
+                icons = {
+                    show = { git = true }, -- hide git glyphs
+                }
+            },
+        })
+    end,
+    cmd = { "NvimTreeToggle", "NvimTreeFindFile" },
+},
 
 	-- Telescope (fuzzy finder)
 	{
@@ -132,7 +150,7 @@ require("lazy").setup({
 		"lewis6991/gitsigns.nvim",
 		config = function()
 			require("gitsigns").setup({
-				-- hide the default gutter signs
+				-- REMOVE gutter signs completely
 				signs = {
 					add          = { text = "" },
 					change       = { text = "" },
@@ -140,13 +158,34 @@ require("lazy").setup({
 					topdelete    = { text = "" },
 					changedelete = { text = "" },
 				},
-				numhl = true, -- highlight line numbers instead
+				numhl = true,  -- use line-number background
+				on_attach = function(bufnr)
+					local gs = package.loaded.gitsigns
+					local map = function(mode, l, r, opts)
+						opts = opts or {}
+						opts.buffer = bufnr
+						vim.keymap.set(mode, l, r, opts)
+					end
+
+					-- Navigation
+					map("n", "]c", gs.next_hunk)
+					map("n", "[c", gs.prev_hunk)
+
+					-- Actions
+					map("n", "<Leader>hs", gs.stage_hunk)
+					map("n", "<Leader>hr", gs.reset_hunk)
+					map("n", "<Leader>hp", gs.preview_hunk)
+					map("n", "<Leader>hb", gs.blame_line)
+					map("n", "<Leader>hu", gs.undo_stage_hunk)
+				end,
 			})
 
-			-- Strong background highlights for line numbers
-			vim.api.nvim_set_hl(0, "GitSignsAddNr",    { bg = "#1f6f43", fg = "#ffffff", bold = true }) -- vivid green
-			vim.api.nvim_set_hl(0, "GitSignsChangeNr", { bg = "#b58900", fg = "#000000", bold = true }) -- intense yellow
-			vim.api.nvim_set_hl(0, "GitSignsDeleteNr", { bg = "#af1f1f", fg = "#ffffff", bold = true }) -- strong red
+			-- Full line-number backgrounds
+			vim.api.nvim_set_hl(0, "GitSignsAddNr",    { bg = "#1fbf5f", fg = "#ffffff", bold = true })
+			vim.api.nvim_set_hl(0, "GitSignsChangeNr", { bg = "#ffb000", fg = "#000000", bold = true })
+			vim.api.nvim_set_hl(0, "GitSignsDeleteNr", { bg = "#ff1f1f", fg = "#ffffff", bold = true })
+			vim.api.nvim_set_hl(0, "GitSignsTopdeleteNr", { bg = "#ff1f1f", fg = "#ffffff", bold = true })
+			vim.api.nvim_set_hl(0, "GitSignsChangedeleteNr", { bg = "#ff5555", fg = "#ffffff", bold = true })
 		end,
 	},
 	{ "tpope/vim-fugitive" },
