@@ -1,3 +1,13 @@
+function! CopyAllBuffersToClipboard()
+    let l:all_content = ''
+    for buf in range(1, bufnr('$'))
+        if bufloaded(buf)
+            let l:all_content .= join(getbufline(buf, 1, '$'), "\n") . "\n"
+        endif
+    endfor
+    call system('clip.exe', l:all_content)
+endfunction
+
 " Set the leader character (See <Leader> uses below)
 let mapleader = "\\"
 
