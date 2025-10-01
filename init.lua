@@ -7,6 +7,7 @@ vim.g.mapleader = "\\"
 -- Basic options
 -- =======================================================
 local o = vim.opt
+--o.mouse = ""
 o.backspace = "indent,eol,start"
 o.number = true
 o.relativenumber = true
@@ -71,6 +72,14 @@ map("n", "<Leader>fg", "<cmd>Telescope live_grep<CR>",  { desc = "Live grep" })
 map("n", "<Leader>fb", "<cmd>Telescope buffers<CR>",    { desc = "Find buffers" })
 map("n", "<Leader>fh", "<cmd>Telescope help_tags<CR>",  { desc = "Help tags" })
 
+-- Inspect under cursor
+vim.api.nvim_set_keymap(
+	"n",
+	"<leader>i",
+	":TSHighlightCapturesUnderCursor<CR>",
+	{ noremap = true, silent = true }
+)
+
 -- =======================================================
 -- Plugins using lazy.nvim
 -- =======================================================
@@ -87,25 +96,25 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
 	-- File explorer
 	{
-    "nvim-tree/nvim-tree.lua",
-    dependencies = { "nvim-tree/nvim-web-devicons" },
-    config = function()
-        require("nvim-tree").setup({
-            git = {
-                enable = true,        -- enable git coloring
-                ignore = false,       -- don't hide ignored files
-                timeout = 400,
-            },
-            renderer = {
-                highlight_git = true,  -- color filenames by git status
-                icons = {
-                    show = { git = true }, -- hide git glyphs
-                }
-            },
-        })
-    end,
-    cmd = { "NvimTreeToggle", "NvimTreeFindFile" },
-},
+		"nvim-tree/nvim-tree.lua",
+		dependencies = { "nvim-tree/nvim-web-devicons" },
+		config = function()
+			require("nvim-tree").setup({
+				git = {
+					enable = true,        -- enable git coloring
+					ignore = false,       -- don't hide ignored files
+					timeout = 400,
+				},
+				renderer = {
+					highlight_git = true,  -- color filenames by git status
+					icons = {
+						show = { git = true }, -- hide git glyphs
+					}
+				},
+			})
+		end,
+		cmd = { "NvimTreeToggle", "NvimTreeFindFile" },
+	},
 
 	-- Telescope (fuzzy finder)
 	{
@@ -113,6 +122,39 @@ require("lazy").setup({
 		tag = "0.1.8",
 		dependencies = { "nvim-lua/plenary.nvim" },
 		cmd = "Telescope",
+		config = function()
+			local telescope = require('telescope')
+			local builtin = require('telescope.builtin')
+
+			telescope.setup{
+				defaults = {
+					hidden = true,
+					no_ignore = false,
+					file_ignore_patterns = { 
+						"%.git/",          -- ignore .git folder
+						"node_modules/",   -- ignore node_modules
+						"dist/",           -- ignore build/output folders
+					},
+					prompt_prefix = "🔍 ",
+					selection_caret = " ",
+					path_display = {"smart"},
+				},
+				pickers = {
+					find_files = { hidden = true, no_ignore = true },
+					live_grep = {
+						additional_args = function(opts)
+							return {"--hidden"}
+						end,
+					},
+				}
+			}
+
+			local opts = { noremap = true, silent = true }
+			vim.api.nvim_set_keymap('n', '<leader>ff', "<cmd>lua require('telescope.builtin').find_files()<CR>", opts)
+			vim.api.nvim_set_keymap('n', '<leader>fg', "<cmd>lua require('telescope.builtin').live_grep()<CR>", opts)
+			vim.api.nvim_set_keymap('n', '<leader>fb', "<cmd>lua require('telescope.builtin').buffers()<CR>", opts)
+			vim.api.nvim_set_keymap('n', '<leader>fh', "<cmd>lua require('telescope.builtin').find_files({hidden=true, no_ignore=true})<CR>", opts)
+		end
 	},
 
 	-- LSP configuration
@@ -141,6 +183,19 @@ require("lazy").setup({
 				highlight = { enable = true },
 				indent = { enable = true },
 				ensure_installed = { "lua", "kotlin", "python", "javascript", "html", "css" },
+			})
+		end,
+	},
+	{
+		"nvim-treesitter/playground",
+		dependencies = { "nvim-treesitter/nvim-treesitter" },
+		config = function()
+			require("nvim-treesitter.configs").setup({
+				playground = {
+					enable = true,
+					updatetime = 25,
+					persist_queries = false,
+				},
 			})
 		end,
 	},
@@ -239,17 +294,17 @@ require("lazy").setup({
 
 -- Clear highlights for key groups to force terminal defaults
 local groups = {
-  "Normal", "NormalNC", "SignColumn", "CursorLine", "LineNr",
-  "FoldColumn", "VertSplit", "StatusLine", "StatusLineNC",
-  "TabLine", "TabLineFill", "TabLineSel", "Pmenu", "PmenuSel",
-  "PmenuSbar", "PmenuThumb", "NormalFloat"
+	"Normal",       -- text in buffer
+	"NormalNC",     -- non-current buffer
+	"CursorLine",   -- current line highlight (optional)
+	"LineNr",       -- line numbers (optional)
 }
 
 local function use_terminal_colors()
-  for _, g in ipairs(groups) do
-	 --Only set bg=nil to make it transparent; fg=nil keeps terminal default
-	pcall(vim.api.nvim_set_hl, 0, g, { bg = "none" })
-  end
+	for _, g in ipairs(groups) do
+		--Only set bg=nil to make it transparent; fg=nil keeps terminal default
+		pcall(vim.api.nvim_set_hl, 0, g, { bg = "none" })
+	end
 end
 
 -- Apply immediately
