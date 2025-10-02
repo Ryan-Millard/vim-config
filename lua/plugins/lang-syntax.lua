@@ -1,3 +1,0 @@
-return {
-	{ "udalov/kotlin-vim" },
-}
