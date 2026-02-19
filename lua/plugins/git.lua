@@ -88,11 +88,15 @@ return {
 			require("gitsigns").setup({
 				signs = { add = { text = "" }, change = { text = "" }, delete = { text = "" }, topdelete = { text = "" }, changedelete = { text = "" } },
 				numhl = true,
-				signcolumn = false,
 			})
-			vim.api.nvim_set_hl(0, "GitSignsAddNr",    { bg = "#1fbf5f", fg = "#ffffff", bold = true })
-			vim.api.nvim_set_hl(0, "GitSignsChangeNr", { bg = "#ffb000", fg = "#000000", bold = true })
-			vim.api.nvim_set_hl(0, "GitSignsDeleteNr", { bg = "#ff1f1f", fg = "#ffffff", bold = true })
+
+			vim.api.nvim_set_hl(0, "GitSignsAdd",    { fg = "#000000", bg = "#00ff00", bold = true })
+			vim.api.nvim_set_hl(0, "GitSignsChange", { fg = "#000000", bg = "#ffaa00", bold = true })
+			vim.api.nvim_set_hl(0, "GitSignsDelete", { fg = "#000000", bg = "#ff0000", bold = true })
+
+			vim.api.nvim_set_hl(0, "GitSignsAddNr",    { fg = "#000000", bg = "#00ff00", bold = true })
+			vim.api.nvim_set_hl(0, "GitSignsChangeNr", { fg = "#000000", bg = "#ffaa00", bold = true })
+			vim.api.nvim_set_hl(0, "GitSignsDeleteNr", { fg = "#000000", bg = "#ff0000", bold = true })
 		end,
 	},
 	{ "tpope/vim-fugitive", cmd = "Git" },
