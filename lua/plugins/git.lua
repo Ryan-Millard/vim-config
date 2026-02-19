@@ -86,6 +86,7 @@ return {
 			require("gitsigns").setup({
 				signs = { add = { text = "" }, change = { text = "" }, delete = { text = "" }, topdelete = { text = "" }, changedelete = { text = "" } },
 				numhl = true,
+				signcolumn = false,
 			})
 			vim.api.nvim_set_hl(0, "GitSignsAddNr",    { bg = "#1fbf5f", fg = "#ffffff", bold = true })
 			vim.api.nvim_set_hl(0, "GitSignsChangeNr", { bg = "#ffb000", fg = "#000000", bold = true })
