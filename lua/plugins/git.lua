@@ -1,7 +1,6 @@
 vim.o.termguicolors = true
 
 return {
-
 	{
 		"lewis6991/gitsigns.nvim",
 		event = "BufRead",
@@ -48,7 +47,6 @@ return {
 				return term_job
 			end
 
-
 			return {
 				{ "]c", gs.next_hunk, desc = "Next hunk" },
 				{ "[c", gs.prev_hunk, desc = "Prev hunk" },
@@ -60,14 +58,7 @@ return {
 
 				-- fugitive keys with ephemeral output
 				{ "<Leader>gs", function() git_floating("status") end, desc = "Git status" },
-				{
-					"<Leader>gl",
-					function()
-						local count = vim.v.count1
-						git_floating("log --oneline -n " .. count)
-					end,
-					desc = "Git log"
-				},
+				{ "<Leader>gl", function() local count = vim.v.count1 git_floating("log --oneline -n " .. count) end, desc = "Git log" },
 				{ "<Leader>gd", function() git_floating("diff --color") end, desc = "Git diff current file" },
 				{ "<Leader>gb", function() git_floating("blame -c " .. vim.fn.expand("%")) end, desc = "Blame current file" },
 				-- commands that need a buffer
@@ -87,7 +78,9 @@ return {
 		config = function()
 			require("gitsigns").setup({
 				signs = { add = { text = "" }, change = { text = "" }, delete = { text = "" }, topdelete = { text = "" }, changedelete = { text = "" } },
-				numhl = true,
+				numhl = true,  -- Keep background highlights on line numbers
+				linehl = false,  -- Optional: Can be adjusted for line-specific highlights
+				signcolumn = false,  -- Disable the entire sign gutter (column)
 			})
 
 			vim.api.nvim_set_hl(0, "GitSignsAdd",    { fg = "#000000", bg = "#00ff00", bold = true })
