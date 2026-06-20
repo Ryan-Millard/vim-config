@@ -43,6 +43,18 @@ return {
 				find_files = { hidden = true, no_ignore = true },
 				live_grep = { additional_args = function() return { "--hidden" } end },
 			},
+			extensions = {
+				undo = {
+					mappings = {
+						i = {
+							["<CR>"] = require("telescope-undo.actions").restore,
+						},
+						n = {
+							["<CR>"] = require("telescope-undo.actions").restore,
+						},
+					},
+				},
+			},
 		})
 
 		-- Load the undo extension
